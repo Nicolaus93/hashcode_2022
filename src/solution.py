@@ -91,4 +91,4 @@ if __name__ == '__main__':
         res = greedy(ps, cs)
         sol_str = write_str(res)
         logger.info(f"writing solution for {case}")
-        write_file(sol_str, p.parent / f"sol{pos},txt")
+        write_file(sol_str, p.parent / f"sol{pos}.txt")
