@@ -13,6 +13,10 @@ class Skill:
 class Contributor:
     name: str
     skills: T.Dict[Skill, int]
+    time_when_free: int = 0
+
+    def __hash__(self):
+        return hash(self.name)
 
 
 @dataclass
