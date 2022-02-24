@@ -32,7 +32,6 @@ def read_file(p: pathlib.Path) -> T.Tuple[T.Any]:
                 skills[Skill(skillname)] = int(value)
             projects.append(Project(name=name,
                                     duration=duration,
-                                    score=score,
                                     max_score=score,
                                     best_before=best_before,
                                     skills=skills,
