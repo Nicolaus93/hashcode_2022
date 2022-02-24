@@ -1,6 +1,7 @@
 import typing as T
 import pathlib
 from loguru import logger
+from collections import OrderedDict
 import pandas as pd
 
 from constants import CURRENT_CASE, A_CASE
@@ -15,7 +16,7 @@ def read_file(p: pathlib.Path) -> T.Tuple[T.Any]:
 
         for idx in range(C):
             name, skillcount = fp.readline().split()
-            kwargs_dict = dict(name=name, skills=dict())
+            kwargs_dict = dict(name=name, skills=OrderedDict())
             for k in range(int(skillcount)):
                 skillname, value = fp.readline().split()
                 kwargs_dict['skills'][Skill(skillname)] = int(value)
@@ -24,15 +25,19 @@ def read_file(p: pathlib.Path) -> T.Tuple[T.Any]:
         for c_idx in range(P):
             l = fp.readline().split()
             name = l[0]
-            req_days, score, best_before, role_count = [int(x) for x in l[1:]]
-            skills = dict()
+            duration, score, best_before, role_count = [int(x) for x in l[1:]]
+            skills = OrderedDict()
             for k in range(role_count):
                 skillname, value = fp.readline().split()
                 skills[Skill(skillname)] = int(value)
             projects.append(Project(name=name,
+                                    duration=duration,
                                     score=score,
+                                    max_score=score,
                                     best_before=best_before,
-                                    skills=skills))
+                                    skills=skills,
+                                    employed=OrderedDict({k:None for k in skills})
+                                    ))
 
     return contributors, projects
 
