@@ -1,14 +1,10 @@
 import typing as T
 import pathlib
 from loguru import logger
-from collections import OrderedDict
-import pandas as pd
-
-from constants import CURRENT_CASE, A_CASE
-from src.data import Project, Skill, Contributor
+from src.data import Project
 
 
-def write_str(projects: T.Sequence[Project]) -> str:
+def write_str(projects: T.Sequence[Project], verbose: bool = False) -> str:
     """Assumes all projects have been finished!"""
 
     txt: str = ""
@@ -17,7 +13,8 @@ def write_str(projects: T.Sequence[Project]) -> str:
         txt += f"{p.name}\n"
         txt += ' '.join([x.name for x in p.employed.values()])
         txt += '\n'
-    logger.info(txt)
+    if verbose:
+        logger.info(txt)
     return txt
 
 

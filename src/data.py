@@ -1,5 +1,4 @@
 import typing as T
-from collections import OrderedDict
 import numpy as np
 from dataclasses import dataclass, field
 
@@ -7,12 +6,13 @@ from dataclasses import dataclass, field
 @dataclass(frozen=True, eq=True)
 class Skill:
     name: str
+    level: int
 
 
 @dataclass
 class Contributor:
     name: str
-    skills: T.Dict[Skill, int]
+    skills: T.List[Skill]
     time_when_free: int = 0
 
     def __hash__(self):
@@ -25,7 +25,7 @@ class Project:
     duration: int
     best_before: int
     max_score: int
-    skills: T.Dict[Skill, int] = field(repr=False)
+    skills: T.List[Skill] = field(repr=False)
     employed: T.Dict[Skill, Contributor] = field(repr=False)
     end_date: int = np.inf
     start_date: int = 0
