@@ -1,11 +1,18 @@
-
+import typing as T
 from dataclasses import dataclass
 
+@dataclass
+class Skill:
+    name:str
+
 
 @dataclass
-class Contributors:
-    pass
+class Contributor:
+    name:str
+    skills:T.Dict[Skill,int]
+
 
 @dataclass
-class Projects:
-    pass
+class Project:
+    name:str
+    skills: T.Dict[Skill, int]
