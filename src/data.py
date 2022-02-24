@@ -21,8 +21,8 @@ class Project:
     duration: int
     best_before: int
     max_score: int
-    skills: T.Dict[Skill, int]
-    employed: T.Dict[Skill, Contributor]
+    skills: T.Dict[Skill, int] = field(repr=False)
+    employed: T.Dict[Skill, Contributor] = field(repr=False)
     end_date: int = np.inf
     start_date: int = 0
 
