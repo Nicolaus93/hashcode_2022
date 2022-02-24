@@ -3,41 +3,43 @@ import pathlib
 from loguru import logger
 import pandas as pd
 
-from constants import CURRENT_CASE
-from src.data import Project,Skill,Contributor
+from constants import CURRENT_CASE, A_CASE
+from src.data import Project, Skill, Contributor
 
-def read_file(p:pathlib.Path)->T.Tuple[T.Any]:
 
-    contributors:T.List[Contributor] = []
-    projects:T.List[Project] = []
-    with open(str(p) ,'r') as fp:
-        C,P= [int(x) for x in fp.readline().split()]
+def read_file(p: pathlib.Path) -> T.Tuple[T.Any]:
+    contributors: T.List[Contributor] = []
+    projects: T.List[Project] = []
+    with open(str(p), 'r') as fp:
+        C, P = [int(x) for x in fp.readline().split()]
 
         for idx in range(C):
             name, skillcount = fp.readline().split()
-            kwargs_dict= dict(name=name,skills=dict())
+            kwargs_dict = dict(name=name, skills=dict())
             for k in range(int(skillcount)):
                 skillname, value = fp.readline().split()
                 kwargs_dict['skills'][Skill(skillname)] = int(value)
             contributors.append(Contributor(**kwargs_dict))
 
-        for c_idx in enumerate(P):
-            req_days, score, best_before, role_count = fp.readline().split()
+        for c_idx in range(P):
+            l = fp.readline().split()
+            name = l[0]
+            req_days, score, best_before, role_count = [int(x) for x in l[1:]]
+            skills = dict()
+            for k in range(role_count):
+                skillname, value = fp.readline().split()
+                skills[Skill(skillname)] = int(value)
+            projects.append(Project(name=name,
+                                    score=score,
+                                    best_before=best_before,
+                                    skills=skills))
 
-           #
-            print("DO!")
-
-    # the first line contains:
-    # the name of the project (ASCII string of at most 20 characters, all of which are lowercase or uppercase English alphabet letters a-z and A-Z or numbers 0-9),
-    # an integer Di (1 ≤Di ≤ 105) – the number of days it takes to complete the project,
-    # an integer Si (1 ≤ Si ≤ 105) – the score awarded for project’s completion,
-    # an integer Bi (1 ≤ Bi ≤ 105) – the “best before” day for the project,
-    # an integer Ri (1 ≤ Ri ≤ 100) – the number of roles in the project.
-    # the next Ri lines describe the skills in the project:
-    # a string Xk – the name of the skill (ASCII string of at most 20 characters, all of which are lowercase or uppercase English alphabet letters a-z and A-Z, numbers 0-9, dashes '-' or pluses '+'),
-    # an integer Lk (1≤Lk≤100) – the required skill level.
-
-    return contributors,projects
+    return contributors, projects
 
 
-read_file(CURRENT_CASE)
+if __name__ == "__main__":
+    contributors, projects = read_file(A_CASE)
+    for c in contributors:
+        logger.info(c)
+    for p in projects:
+        logger.info(p)

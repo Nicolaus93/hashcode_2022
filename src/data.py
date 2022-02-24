@@ -1,7 +1,7 @@
 import typing as T
-from dataclasses import dataclass
+from dataclasses import dataclass,field
 
-@dataclass
+@dataclass(frozen=True,eq=True)
 class Skill:
     name:str
 
@@ -18,9 +18,9 @@ class Project:
     best_before: int
     score: int
     skills: T.Dict[Skill, int]
+    employed:T.Dict[Skill,Contributor] =  field(default_factory=dict)
 
 @dataclass
 class Solution:
     project:Project
-    employed:T.Dict[Skill,Contributor]
 
