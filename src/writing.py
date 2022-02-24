@@ -16,6 +16,7 @@ def write_str(projects: T.Sequence[Project]) -> str:
     for p in projects:
         txt += f"{p.name}\n"
         txt += ' '.join([x.name for x in p.employed.values()])
+        txt += '\n'
     logger.info(txt)
     return txt
 
