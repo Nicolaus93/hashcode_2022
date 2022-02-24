@@ -1,8 +1,12 @@
 import numpy as np
 import pandas as pd
 import typing as T
+
+from src.constants import A_CASE
 from src.data import Project, Contributor
 from collections import defaultdict
+from loguru import logger
+from reading import read_file
 
 
 def read_input(input_file):
@@ -12,14 +16,14 @@ def read_input(input_file):
 
 
 def greedy(projects: T.List[Project], contributors: T.List[Contributor]):
-
+    tot_score = 0
     projects = sorted(projects, key=lambda x: x.best_before)
     for p in projects:
         available = defaultdict(list)
         for skill, level in p.skills.items():
             for c in contributors:
-                if skill in c.skills and level >= c.skills[skill] and c.time + p.duration <= p.best_before:
-                    c.when_done = c.time + p.duration
+                if skill in c.skills and level <= c.skills[skill] and c.time_when_free + p.duration <= p.best_before:
+                    c.when_done = c.time_when_free + p.duration
                     available[skill].append(c)
 
         assignment = dict()
@@ -27,6 +31,7 @@ def greedy(projects: T.List[Project], contributors: T.List[Contributor]):
         for skill in available:
             available[skill] = sorted(available[skill], key=lambda x: x.when_done)
             # select the person and remove him from the other lists
+            # for c in available[skill]:
             i = 0
             while i <= len(available[skill]):
                 selected = available[skill][i]
@@ -37,13 +42,22 @@ def greedy(projects: T.List[Project], contributors: T.List[Contributor]):
                     i += 1
 
             if skill not in assignment:
-                return 0
+                continue  # go over the next project
 
         # update time for assigned people
+        last_day = -1
         for skill, c in assignment.items():
-            pass
+            # c.time_when_free = c.when_done
+            last_day = max(last_day, c.when_done)
 
-    return 0
+        for skill, c in assignment.items():
+            c.time_when_free = last_day
+
+        p.end_date = last_day
+        logger.info(f"score for {p} is: {p.score}.\n{assignment}")
+        tot_score += p.score
+
+    return tot_score
 
 
 def score(solution) -> int:
@@ -58,5 +72,6 @@ def score(solution) -> int:
 
 
 if __name__ == '__main__':
-    read_input("/home/nico/hashcode_2022/data/a_an_example.in.txt")
-
+    cs, ps = read_file(A_CASE)
+    res = greedy(ps, cs)
+    print(res)
